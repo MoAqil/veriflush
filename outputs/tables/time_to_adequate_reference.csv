@@ -1,0 +1,14 @@
+scenario,mean_time_to_adequate_s_valve_held_open
+S01_healthy,71.4
+S02_restricted,128.4
+S03_partial_valve,89.8
+S04_blockage,
+S05_diversion,92.2
+S06_wrong_volume,71.4
+S07_flow_bias,71.4
+S08_flow_dropout,71.4
+S09a_tt101_frozen,71.4
+S09b_tt101_disconnected,71.4
+S10_weak_contrast,71.4
+S11_valve_feedback,71.4
+S12_multiple,92.2

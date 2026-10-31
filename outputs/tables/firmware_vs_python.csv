@@ -1,0 +1,14 @@
+scenario,python_verdict,fw_verdict,python_t_close_s,fw_t_close_s,python_v_l,fw_v_l,verdict_match,t_close_match,fw_reason,fw_warnings
+S01_healthy,Verified,Verified,94.0,94.0,0.979,0.979,True,True,valve confirmed; endpoint reached feed temperature; target volumes exchanged,
+S02_restricted,Verified,Verified,223.0,223.0,0.567,0.567,True,True,valve confirmed; endpoint reached feed temperature; target volumes exchanged,
+S03_partial_valve,Uncertain,Uncertain,141.0,141.0,0.933,0.933,True,True,exchange evidence complete but valve feedback inconsistent,LS-OPEN not made and flow low: XV-101 partly open?
+S04_blockage,Failed,Failed,32.0,32.0,0.0,0.0,True,True,no flow and no pressure drop: blockage or closed isolation valve,
+S05_diversion,Verified,Verified,145.0,145.0,1.737,1.737,True,True,valve confirmed; endpoint reached feed temperature; target volumes exchanged,"branch volume estimate high: diversion/leak, meter over-reading or V_cfg too small"
+S06_wrong_volume,Verified,Verified,94.0,94.0,0.979,0.979,True,True,valve confirmed; endpoint reached feed temperature; target volumes exchanged,
+S07_flow_bias,Verified,Verified,97.0,97.0,1.415,1.415,True,True,valve confirmed; endpoint reached feed temperature; target volumes exchanged,"branch volume estimate high: diversion/leak, meter over-reading or V_cfg too small"
+S08_flow_dropout,Uncertain,Uncertain,88.0,88.0,0.256,0.256,True,True,endpoint fresh but volume only estimated (FT-101 failed),FT-101 signal lost while branch still draws
+S09a_tt101_frozen,Uncertain,Uncertain,88.0,88.0,0.915,0.915,True,True,metered target reached but endpoint evidence unavailable,
+S09b_tt101_disconnected,Uncertain,Uncertain,88.0,88.0,0.915,0.915,True,True,metered target reached but endpoint evidence unavailable,
+S10_weak_contrast,Uncertain,Uncertain,88.0,88.0,0.915,0.915,True,True,metered target reached but endpoint evidence unavailable,
+S11_valve_feedback,Uncertain,Uncertain,94.0,94.0,0.979,0.979,True,True,exchange evidence complete but valve feedback inconsistent,LS-OPEN not made although flow normal: switch/wiring fault
+S12_multiple,Uncertain,Uncertain,77.0,77.0,0.911,0.911,True,True,metered target reached but endpoint evidence unavailable,

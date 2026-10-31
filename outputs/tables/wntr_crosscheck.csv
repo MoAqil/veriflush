@@ -1,0 +1,11 @@
+,value
+q_lpm,0.63
+reynolds,1667.7846486599717
+mean_velocity_m_s,0.20889086280811267
+travel_time_analytic_s,32.53265664234477
+travel_time_epanet_s,34.0
+travel_time_python_plug_s,33.0
+endpoint_age_epanet_s,31.987518310546875
+endpoint_age_python_plug_s,32.53265664234621
+headloss_branch_epanet_m,0.06525230407714844
+headloss_branch_python_m,0.0640090158323107

@@ -1,0 +1,59 @@
+.........................................                                [100%]
+41 passed in 12.68s
+validation table: 41/41 PASS
+
+>> run_experiments.py
+representative runs: 78  (7 s)
+monte carlo [two_region] done (68 s)
+                  method  True pass  False pass  True failure  False failure  Uncertain  fault_detection_rate  mean_water_l
+Flow + configured volume        247         160            40             73          0              0.256818      0.983577
+              Timer-only        326         194             0              0          0              0.000000      0.817842
+               VeriFlush        199           0            39              1        281              0.931818      0.943607
+monte carlo [radial] done (233 s)
+                  method  True pass  False pass  True failure  False failure  Uncertain  fault_detection_rate  mean_water_l
+Flow + configured volume         21         386            40             73          0              0.256818      0.983577
+              Timer-only         98         422             0              0          0              0.000000      0.817842
+               VeriFlush        195           0            39              5        281              0.920455      1.031637
+sensitivity done (477 s)
+done in 481.4 s
+    Maximum Trials .................... 200
+>> water_saving.py
+       case  fixed_per_outlet_l  adaptive_per_outlet_l  saving_m3_per_year  saving_pct
+ low saving                12.0                  12.85                 0.0         0.0
+    central                24.0                   3.39               321.6        85.9
+high saving                45.0                   1.27              1193.8        97.2
+
+>> make_figures.py
+ok fig_healthy
+ok fig_diversion
+ok fig_verdict_grid
+ok fig_confusion
+ok fig_water_residual
+ok fig_transport
+ok fig_thresholds
+ok fig_verification
+ok fig_thermal_limit
+
+>> dashboard/export_html.py
+wrote outputs\veriflush_dashboard.html (1.8 MB)
+
+>> dashboard/screenshots.py
+ok S01_healthy__veriflush_end.png
+ok S02_restricted__veriflush_end.png
+ok S03_partial_valve__veriflush_end.png
+ok S04_blockage__veriflush_end.png
+ok S05_diversion__veriflush_end.png
+ok S06_wrong_volume__veriflush_end.png
+ok S07_flow_bias__veriflush_end.png
+ok S08_flow_dropout__veriflush_end.png
+ok S09a_tt101_frozen__veriflush_end.png
+ok S09b_tt101_disconnected__veriflush_end.png
+ok S10_weak_contrast__veriflush_end.png
+ok S11_valve_feedback__veriflush_end.png
+ok S12_multiple__veriflush_end.png
+ok S01_healthy__veriflush_t20_arrival.png
+ok S05_diversion__timeronly_end.png
+ok S05_diversion__flow_end.png
+ok S01_healthy__veriflush_end_radial.png
+
+All outputs regenerated. See STATUS.md.

@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VeriFlush Digital Prototype</title>
+<style>
+:root{
+  --paper:#f4f3ef; --card:#fcfcfb; --ink:#141413; --ink2:#52514e; --muted:#8a8984; --rule:#dedcd6; --grid:#ebe9e4;
+  --old:#b3541e; --fresh:#2a78d6; --pipe:#3b3a37;
+  --good:#0ca30c; --crit:#d03b3b; --warn:#fab219; --serious:#ec835a; --blue:#2a78d6;
+  --m-timer:#1baf7a; --m-flow:#eb6834; --m-vf:#2a78d6;
+  --mono:"IBM Plex Mono","Cascadia Mono",Consolas,ui-monospace,monospace;
+  --sans:"IBM Plex Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.45 var(--sans)}
+.banner{position:sticky;top:0;z-index:5;background:var(--ink);color:#f4f3ef;font:600 11.5px/1 var(--mono);letter-spacing:.08em;
+  padding:8px 16px;display:flex;gap:16px;align-items:center;justify-content:space-between;text-transform:uppercase}
+.banner b{color:#fab219}
+.wrap{max-width:1320px;margin:0 auto;padding:18px 16px 40px}
+header{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:14px}
+h1{font:600 26px/1.05 var(--sans);margin:0;letter-spacing:-.01em}
+h1 small{display:block;font:400 13px/1.4 var(--sans);color:var(--ink2);letter-spacing:0;margin-top:5px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+label.f{display:flex;flex-direction:column;gap:4px;font:600 10.5px/1 var(--mono);letter-spacing:.06em;color:var(--ink2);text-transform:uppercase}
+select{font:500 13.5px var(--sans);padding:7px 30px 7px 10px;border:1px solid var(--rule);background:var(--card);border-radius:6px;color:var(--ink);max-width:340px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:7px;overflow:hidden;background:var(--card)}
+.seg button{font:500 13px var(--sans);border:0;background:none;padding:7px 12px;cursor:pointer;color:var(--ink2);border-right:1px solid var(--rule)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed=true]{background:var(--ink);color:#fff}
+.desc{font-size:13px;color:var(--ink2);margin:-4px 0 14px;max-width:880px}
+.desc b{color:var(--ink)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px;align-items:start}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:10px}
+.card h3{font:600 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin:0 0 10px}
+.rig{padding:12px 14px 6px}
+.rig svg{width:100%;height:auto;display:block}
+.player{display:flex;gap:10px;align-items:center;padding:10px 14px;border-top:1px solid var(--rule)}
+.btn{font:600 12.5px var(--sans);border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:6px;padding:7px 13px;cursor:pointer;min-width:74px}
+.btn.ghost{background:none;color:var(--ink);border-color:var(--rule)}
+input[type=range]{flex:1;accent-color:var(--ink)}
+.clock{font:600 13px var(--mono);min-width:92px;text-align:right}
+.side{display:flex;flex-direction:column;gap:14px}
+.verdict{padding:14px}
+.vbadge{display:flex;align-items:center;gap:10px;font:600 22px/1 var(--sans);margin:2px 0 10px}
+.vicon{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 16px var(--mono);flex:none}
+.vreason{font-size:13px;color:var(--ink);margin:0}
+.vwarn{margin:10px 0 0;padding:0;list-style:none;font-size:12.5px;color:var(--ink2)}
+.vwarn li{border-left:3px solid var(--warn);padding:3px 0 3px 8px;margin-top:6px}
+.reads{padding:14px}
+.kv{display:grid;grid-template-columns:1fr auto;gap:7px 10px;font-size:13px}
+.kv span:nth-child(odd){color:var(--ink2)}
+.kv span:nth-child(even){font:600 13px var(--mono);text-align:right}
+.led{display:inline-block;width:9px;height:9px;border-radius:50%;background:#d6d4ce;margin-left:6px;vertical-align:0}
+.led.on{background:var(--good);box-shadow:0 0 0 3px #0ca30c22}
+.truth{padding:14px;border:1.5px dashed var(--ink2);background:repeating-linear-gradient(135deg,#fcfcfb 0 9px,#f5f4f0 9px 10px)}
+.truth h3{color:var(--ink)}
+.truth .tag{display:inline-block;font:700 10px/1 var(--mono);letter-spacing:.06em;background:var(--ink);color:#fff;padding:4px 6px;border-radius:3px;margin-bottom:10px}
+.charts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:14px}
+.chart{padding:12px 12px 6px;position:relative}
+.chart.truthc{border:1.5px dashed var(--ink2)}
+.chart svg{width:100%;height:150px;display:block;overflow:visible}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--ink2);margin-top:2px}
+.legend i{display:inline-block;width:12px;height:2px;vertical-align:middle;margin-right:5px}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;font:500 11.5px/1.35 var(--mono);padding:6px 8px;border-radius:5px;white-space:nowrap;opacity:0;transform:translate(-50%,-110%)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font:600 10.5px/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule)}
+td{padding:9px 10px;border-bottom:1px solid var(--grid);vertical-align:top}
+td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+tr.sel td{background:#f0efe9}
+.pill{display:inline-flex;align-items:center;gap:6px;font-weight:600;white-space:nowrap}
+.pill i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.compare{margin-top:14px;padding:14px;overflow-x:auto}
+.foot{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;margin-top:14px;font-size:12px;color:var(--ink2)}
+.mono{font-family:var(--mono)}
+@media (max-width:1000px){.grid{grid-template-columns:1fr}.charts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.charts{grid-template-columns:1fr}h1{font-size:22px}.banner{font-size:10px}}
+</style>
+</head>
+<body>
+<div class="banner"><span><b>■ SIMULATED DATA</b> &nbsp;·&nbsp; virtual testbed output, not physical measurements</span><span id="metaLine"></span></div>
+<div class="wrap">
+<header>
+  <h1>VeriFlush<small>Flush verification for low-use plumbing branches · digital prototype of the Rev-B rig</small></h1>
+  <div class="controls">
+    <label class="f">Scenario<select id="scen"></select></label>
+    <label class="f" id="bkWrap">Transport model<select id="backend"></select></label>
+    <label class="f">Method<div class="seg" id="methods"></div></label>
+  </div>
+</header>
+<p class="desc" id="desc"></p>
+
+<div class="grid">
+  <div class="card">
+    <div class="rig"><h3>Rig · monitored branch <span id="geom" class="mono" style="text-transform:none;letter-spacing:0"></span></h3>
+      <svg id="rig" viewBox="0 104 990 306" role="img" aria-label="Animated rig schematic"></svg>
+    </div>
+    <div class="player">
+      <button class="btn" id="play">Start</button>
+      <button class="btn ghost" id="reset">Reset</button>
+      <label class="f" style="flex-direction:row;align-items:center;gap:6px">Speed
+        <select id="speed"><option value="2">2×</option><option value="6" selected>6×</option><option value="15">15×</option></select></label>
+      <input type="range" id="scrub" min="0" max="100" value="0" aria-label="Timeline">
+      <span class="clock" id="clock">t = 0 s</span>
+    </div>
+  </div>
+  <div class="side">
+    <div class="card verdict"><h3>Verdict · <span id="vmethod"></span></h3>
+      <div class="vbadge" id="vbadge"></div><p class="vreason" id="vreason"></p><ul class="vwarn" id="vwarn"></ul></div>
+    <div class="card reads"><h3>Live signals · decision inputs</h3><div class="kv" id="reads"></div></div>
+    <div class="card truth"><span class="tag">TRUTH: NOT USED BY VERIFLUSH</span><div class="kv" id="truth"></div></div>
+  </div>
+</div>
+
+<div class="charts" id="charts"></div>
+
+<div class="card compare"><h3>Three-method comparison · same physical event, same seed</h3><table id="cmp"></table></div>
+
+<div class="foot">
+  <span id="footnote"></span>
+  <button class="btn ghost" id="csv">Download run CSV</button>
+</div>
+</div>
+
+<script>
+const P = /*__PAYLOAD__*/null;
+const METHODS = ["Timer-only","Flow + configured volume","VeriFlush"];
+const MCOL = {"Timer-only":"var(--m-timer)","Flow + configured volume":"var(--m-flow)","VeriFlush":"var(--m-vf)"};
+const VSTYLE = {Verified:["var(--good)","✓"],Failed:["var(--crit)","✕"],Uncertain:["var(--warn)","?"]};
+const OSTYLE = {"True pass":"var(--good)","True failure":"var(--blue)","Uncertain":"var(--warn)","False failure":"var(--serious)","False pass":"var(--crit)"};
+const OLD=[179,84,30], FRESH=[42,120,214];
+const $ = id => document.getElementById(id);
+const S = {backend:Object.keys(P.data)[0], scen:0, method:"VeriFlush", i:0, playing:false, speed:6, acc:0};
+
+function mix(f){f=Math.max(0,Math.min(1,f==null?1:f));return `rgb(${OLD.map((o,k)=>Math.round(o*f+FRESH[k]*(1-f))).join(",")})`}
+function fmt(x,d=2){return x==null||Number.isNaN(x)?"—":Number(x).toFixed(d)}
+function sc(){return P.data[S.backend][S.scen]}
+function run(){return sc().runs[S.method]}
+
+// ---------------------------------------------------------------- controls
+$("metaLine").textContent = `model v${P.meta.model_version} · seed ${P.meta.seed} · generated ${P.meta.generated_utc}`;
+const bks = Object.keys(P.data);
+bks.forEach(b=>{const o=document.createElement("option");o.value=b;o.textContent=P.meta.backends[b];$("backend").appendChild(o)});
+if(bks.length<2) $("bkWrap").style.display="none";
+function fillScen(){const s=$("scen");s.innerHTML="";P.data[S.backend].forEach((x,i)=>{const o=document.createElement("option");o.value=i;o.textContent=`${x.code} · ${x.title}`;s.appendChild(o)});s.value=S.scen}
+fillScen();
+METHODS.forEach(m=>{const b=document.createElement("button");b.textContent=m==="Flow + configured volume"?"Flow + volume":m;b.dataset.m=m;b.onclick=()=>{S.method=m;load(false)};$("methods").appendChild(b)});
+$("scen").onchange=e=>{S.scen=+e.target.value;load(true)};
+$("backend").onchange=e=>{S.backend=e.target.value;fillScen();load(true)};
+$("speed").onchange=e=>S.speed=+e.target.value;
+$("play").onclick=()=>{if(S.i>=run().series.t.length-1)S.i=0;S.playing=!S.playing;$("play").textContent=S.playing?"Pause":"Start"};
+$("reset").onclick=()=>{S.playing=false;S.i=0;$("play").textContent="Start";draw()};
+$("scrub").oninput=e=>{S.i=+e.target.value;draw()};
+
+// ---------------------------------------------------------------- rig schematic
+const NS="http://www.w3.org/2000/svg";
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);(parent||rig).appendChild(e);return e}
+function txt(x,y,s,attrs={},parent){const t=el("text",Object.assign({x,y,"font-size":11,"font-family":"var(--mono)",fill:"var(--ink2)"},attrs),parent);t.textContent=s;return t}
+const rig=$("rig"); let R={};
+function buildRig(){
+  rig.innerHTML=""; R={};
+  const pipe={stroke:"var(--pipe)","stroke-width":7,fill:"none","stroke-linecap":"round","stroke-linejoin":"round"};
+  // feed tank
+  el("rect",{x:20,y:170,width:104,height:150,rx:6,fill:"none",stroke:"var(--ink)","stroke-width":1.5});
+  el("rect",{x:22,y:205,width:100,height:113,rx:4,fill:mix(0),opacity:.85});
+  txt(24,162,"TK-101 feed",{fill:"var(--ink)","font-weight":600});
+  txt(28,232,"ice packs",{fill:"#fff","font-size":10});
+  el("circle",{cx:100,cy:285,r:6,fill:"#fff",stroke:"var(--ink)","stroke-width":1.5});
+  txt(30,303,"TT-100",{fill:"#fff","font-size":10,"font-weight":600}); R.tt100=txt(30,315,"",{fill:"#fff","font-size":10});
+  // pump + bypass
+  el("path",Object.assign({d:"M124 300 H170"},pipe));
+  el("circle",{cx:186,cy:300,r:16,fill:"var(--card)",stroke:"var(--ink)","stroke-width":1.5});
+  R.pump=el("path",{d:"M178 292 L196 300 L178 308 Z",fill:"var(--ink)"});
+  txt(164,336,"P-101");
+  el("path",{d:"M202 300 H230 V130 H72 V170",stroke:"var(--muted)","stroke-width":3,fill:"none","stroke-dasharray":"5 4"});
+  txt(118,124,"BV-101 bypass",{"font-size":10});
+  el("path",Object.assign({d:"M202 300 H250 V210"},pipe));
+  // gauge
+  el("circle",{cx:250,cy:184,r:20,fill:"var(--card)",stroke:"var(--ink)","stroke-width":1.5});
+  R.needle=el("line",{x1:250,y1:184,x2:250,y2:168,stroke:"var(--crit)","stroke-width":2});
+  txt(222,148,"PI-101"); R.pk=txt(276,180,"",{fill:"var(--ink)","font-weight":600}); txt(276,193,"virtual 0–10 kPa",{"font-size":9.5});
+  // manifold + reference branch
+  el("path",Object.assign({d:"M250 210 V240 H300"},pipe));
+  el("path",Object.assign({d:"M300 240 L330 210 H880"},{stroke:"#c9c7c0","stroke-width":5,fill:"none","stroke-linecap":"round"}));
+  txt(345,203,"HV-201 · reference branch 2 m → TK-102",{"font-size":10});
+  // monitored main path (particles ride on this)
+  const coilX0=520, coilX1=760, cy=290, loops=7, rr=26;
+  // pre-coil pipe
+  el("path",Object.assign({d:`M300 240 L330 ${cy} H${coilX0}`},pipe));
+  // HV-101
+  valveSym(352,cy,"HV-101");
+  // FT-101
+  el("rect",{x:390,y:cy-14,width:46,height:28,rx:4,fill:"var(--card)",stroke:"var(--ink)","stroke-width":1.5});
+  R.rotor=el("g",{transform:`translate(413 ${cy})`});
+  el("line",{x1:-8,y1:0,x2:8,y2:0,stroke:"var(--ink)","stroke-width":2},R.rotor);el("line",{x1:0,y1:-8,x2:0,y2:8,stroke:"var(--ink)","stroke-width":2},R.rotor);
+  txt(392,cy-22,"FT-101",{fill:"var(--ink)","font-weight":600}); R.qtxt=txt(380,cy+32,"",{fill:"var(--ink)","font-weight":600});
+  // fault tee + DV-101
+  el("path",Object.assign({d:`M480 ${cy} V372 H560`},{stroke:"var(--pipe)","stroke-width":5,fill:"none"}));
+  R.dvflow=el("path",{d:`M480 ${cy+4} V372 H560`,stroke:mix(0),"stroke-width":2.5,fill:"none","stroke-dasharray":"2 9",opacity:0});
+  valveSym(480,338,"",true); txt(490,342,"DV-101",{"font-size":10}); R.dvtxt=txt(490,355,"",{"font-size":10});
+  el("rect",{x:560,y:356,width:46,height:30,rx:3,fill:"none",stroke:"var(--ink)","stroke-width":1.2}); txt(560,398,"to TK-102",{"font-size":9.5});
+  // coil segments (helix side view)
+  const N=20, pts=[];
+  for(let k=0;k<=400;k++){const s=k/400,th=2*Math.PI*loops*s;pts.push([+(coilX0+(coilX1-coilX0)*s+16*Math.cos(th)-16).toFixed(1),+(cy+rr*Math.sin(th)).toFixed(1)])}
+  // underlay
+  el("path",{d:"M"+pts.map(p=>p.join(" ")).join(" L"),stroke:"#2a2926","stroke-width":10,fill:"none","stroke-linejoin":"round"});
+  R.seg=[];
+  for(let j=0;j<N;j++){const a=Math.floor(j*400/N),b=Math.floor((j+1)*400/N);
+    R.seg.push(el("path",{d:"M"+pts.slice(a,b+1).map(p=>p.join(" ")).join(" L"),stroke:mix(1),"stroke-width":6,fill:"none","stroke-linecap":"round"}))}
+  txt(coilX0+20,cy-50,"coil · 8 mm ID",{fill:"var(--ink)","font-weight":600}); R.coiltxt=txt(coilX0+20,cy-37,"",{"font-size":10});
+  txt(coilX0+90,cy+48,"water colour = TRUTH (tracer)",{"font-size":9.5,fill:"var(--muted)"});
+  // after coil: R-101, TT-101, XV-101
+  el("path",Object.assign({d:`M${coilX1} ${cy} H900 V330`},pipe));
+  R.endpipe=el("path",{d:`M${coilX1} ${cy} H900 V330`,stroke:mix(1),"stroke-width":4,fill:"none","stroke-linecap":"round"});
+  el("rect",{x:776,y:cy-11,width:10,height:22,fill:"var(--muted)"}); txt(768,cy+30,"R-101",{"font-size":10});
+  el("line",{x1:812,y1:cy-24,x2:812,y2:cy,stroke:"var(--ink)","stroke-width":2}); el("circle",{cx:812,cy:cy-26,r:5,fill:"#fff",stroke:"var(--ink)","stroke-width":1.5});
+  txt(770,cy-58,"TT-101",{fill:"var(--ink)","font-weight":600}); R.tt101=txt(770,cy-44,"",{fill:"var(--ink)","font-weight":600});
+  // XV-101 ball valve with rotating ball
+  el("circle",{cx:858,cy:cy,r:14,fill:"var(--card)",stroke:"var(--ink)","stroke-width":1.5});
+  R.ball=el("rect",{x:-11,y:-3.5,width:22,height:7,rx:2,fill:"var(--ink)",transform:`translate(858 ${cy}) rotate(90)`});
+  txt(808,cy+32,"XV-101",{fill:"var(--ink)","font-weight":600});
+  R.lso=el("circle",{cx:858,cy:cy-44,r:5,fill:"#d6d4ce"}); txt(867,cy-40,"LS-OPEN",{"font-size":9.5});
+  R.lsc=el("circle",{cx:858,cy:cy-30,r:5,fill:"#d6d4ce"}); txt(867,cy-26,"LS-CLOSED",{"font-size":9.5});
+  R.cmdtxt=txt(782,cy+45,"",{"font-size":9.5});
+  // outlet tank on scale
+  el("rect",{x:872,y:330,width:56,height:52,rx:4,fill:"none",stroke:"var(--ink)","stroke-width":1.5});
+  R.tank=el("rect",{x:874,y:380,width:52,height:0,fill:mix(1),opacity:.85});
+  el("rect",{x:866,y:384,width:68,height:6,rx:2,fill:"var(--ink2)"}); txt(936,360,"TK-103",{fill:"var(--ink)","font-weight":600});
+  // particles path
+  R.path=el("path",{d:`M250 300 V240 H300 L330 ${cy} H${coilX0} `+"L"+pts.map(p=>p.join(" ")).join(" L")+` L900 ${cy} V330`,fill:"none",stroke:"none"});
+  R.len=R.path.getTotalLength(); R.parts=[];
+  for(let k=0;k<26;k++) R.parts.push(el("circle",{r:2.2,fill:"#fff",opacity:0}));
+  R.phase=0;
+}
+function valveSym(x,y,label,vertical){
+  const g=el("g",{transform:`translate(${x} ${y})${vertical?" rotate(90)":""}`});
+  el("path",{d:"M-10 -8 L10 8 L10 -8 L-10 8 Z",fill:"var(--card)",stroke:"var(--ink)","stroke-width":1.5},g);
+  if(label) txt(x-18,y-14,label,{"font-size":10});
+}
+
+// ---------------------------------------------------------------- charts
+const CH=[
+  {id:"flow",title:"Flow (L/min)",lines:[["q","FT-101 reading","var(--m-vf)"],["qt","true branch flow · truth","var(--ink2)",true]]},
+  {id:"vol",title:"Metered volume (L)",lines:[["v","cumulative V (FT-101)","var(--ink)"]],ref:"target"},
+  {id:"temp",title:"Temperature (°C)",lines:[["tt100","TT-100 feed","var(--fresh)"],["tt101","TT-101 endpoint","var(--old)"]]},
+  {id:"nv",title:"Volumes exchanged (V / V_configured)",lines:[["nv","metered volumes","var(--ink)"]],ref:"nv"},
+  {id:"p",title:"Manifold pressure (kPa, virtual transducer)",lines:[["p","PI-101 virtual","var(--ink)"]]},
+  {id:"res",title:"Old water left in branch (%) · TRUTH",lines:[["resp","residual · truth","var(--old)"],["fop","old water in outflow · truth","var(--ink2)",true]],ref:"adequate",truth:true},
+];
+function buildCharts(){
+  const box=$("charts");box.innerHTML="";
+  CH.forEach(c=>{const d=document.createElement("div");d.className="card chart"+(c.truth?" truthc":"");
+    d.innerHTML=`<h3>${c.title}</h3><svg id="c_${c.id}" viewBox="0 0 400 150" preserveAspectRatio="none"></svg><div class="legend">${c.lines.map(l=>`<span><i style="background:${l[2]}${l[3]?";opacity:.6":""}"></i>${l[1]}</span>`).join("")}</div><div class="tip"></div>`;
+    box.appendChild(d)});
+}
+function series(key){const s=run().series, sc_=sc();
+  if(key==="nv") return s.v.map(v=>v==null?null:v/sc_.configured_l);
+  if(key==="resp") return s.res.map(v=>v*100);
+  if(key==="fop") return s.fo.map(v=>v*100);
+  if(key==="tt101") return s.tt101.map(v=>v<-100?null:v);
+  return s[key];}
+let CS={};
+function drawCharts(){
+  const s=run().series, T=s.t, tmax=T[T.length-1];
+  CH.forEach(c=>{const svg=$("c_"+c.id);svg.innerHTML="";
+    const ys=c.lines.map(l=>series(l[0]));let lo=Infinity,hi=-Infinity;
+    ys.forEach(a=>a.forEach(v=>{if(v!=null){lo=Math.min(lo,v);hi=Math.max(hi,v)}}));
+    let refv=null;const sc_=sc();
+    if(c.ref==="target") refv=sc_.target_volumes*sc_.configured_l;
+    if(c.ref==="nv") refv=sc_.target_volumes;
+    if(c.ref==="adequate") refv=sc_.adequate*100;
+    if(refv!=null){lo=Math.min(lo,refv);hi=Math.max(hi,refv)}
+    if(c.id==="flow"||c.id==="vol"||c.id==="nv"||c.id==="res") lo=0;
+    if(!isFinite(lo)){lo=0;hi=1} if(hi-lo<1e-6) hi=lo+1; const pad=(hi-lo)*0.08; hi+=pad; if(c.id==="temp"||c.id==="p") lo-=pad;
+    const X=t=>36+(t/tmax)*356, Y=v=>140-(v-lo)/(hi-lo)*128;
+    for(let k=0;k<=3;k++){const v=lo+(hi-lo)*k/3;el("line",{x1:36,x2:392,y1:Y(v),y2:Y(v),stroke:"var(--grid)","stroke-width":1,"vector-effect":"non-scaling-stroke"},svg);
+      const t=el("text",{x:32,y:Y(v)+3,"font-size":9,"text-anchor":"end",fill:"var(--muted)","font-family":"var(--mono)"},svg);t.textContent=Math.abs(hi-lo)>=20?v.toFixed(0):Math.abs(hi-lo)>=2?v.toFixed(1):v.toFixed(2)}
+    if(refv!=null){el("line",{x1:36,x2:392,y1:Y(refv),y2:Y(refv),stroke:"var(--muted)","stroke-dasharray":"3 3","vector-effect":"non-scaling-stroke"},svg)}
+    ys.forEach((a,k)=>{let d="",pen=false;a.forEach((v,i)=>{if(v==null){pen=false;return}d+=(pen?"L":"M")+X(T[i]).toFixed(1)+" "+Y(v).toFixed(1);pen=true});
+      el("path",{d,stroke:c.lines[k][2],"stroke-width":c.lines[k][3]?1.2:1.8,opacity:c.lines[k][3]?.6:1,fill:"none","vector-effect":"non-scaling-stroke","stroke-dasharray":c.lines[k][3]?"4 3":""},svg)});
+    const tc=run().t_close; el("line",{x1:X(tc),x2:X(tc),y1:8,y2:140,stroke:"var(--ink)","stroke-width":1,"stroke-dasharray":"1 3","vector-effect":"non-scaling-stroke"},svg);
+    const ph=el("line",{x1:36,x2:36,y1:8,y2:140,stroke:"var(--crit)","stroke-width":1.2,"vector-effect":"non-scaling-stroke"},svg);
+    const dot=el("circle",{r:3.2,fill:c.lines[0][2],stroke:"#fff","stroke-width":1.5},svg);
+    CS[c.id]={ph,dot,X,Y,ys};
+    const tip=svg.parentNode.querySelector(".tip");
+    svg.onmousemove=e=>{const r=svg.getBoundingClientRect();const t=((e.clientX-r.left)/r.width*400-36)/356*tmax;
+      let i=T.findIndex(x=>x>=t);if(i<0)i=T.length-1;
+      tip.style.opacity=1;tip.style.left=(e.clientX-r.left+12)+"px";tip.style.top=(e.clientY-r.top+40)+"px";
+      tip.innerHTML=`t = ${T[i]} s<br>`+c.lines.map((l,k)=>`${l[1].split(" · ")[0]}: ${fmt(ys[k][i])}`).join("<br>")};
+    svg.onmouseleave=()=>tip.style.opacity=0;
+  });
+}
+
+// ---------------------------------------------------------------- frame
+function draw(){
+  const r=run(), s=r.series, i=Math.min(S.i,s.t.length-1), t=s.t[i], sc_=sc();
+  $("scrub").value=i; $("clock").textContent=`t = ${t.toFixed(0)} s`;
+  // rig
+  s.prof[i].forEach((f,j)=>R.seg[j].setAttribute("stroke",mix(f)));
+  R.endpipe.setAttribute("stroke",mix(s.fo[i]));
+  R.ball.setAttribute("transform",`translate(858 290) rotate(${90-90*s.pos[i]})`);
+  R.lso.setAttribute("fill",s.lso[i]?"var(--good)":"#d6d4ce"); R.lsc.setAttribute("fill",s.lsc[i]?"var(--good)":"#d6d4ce");
+  R.cmdtxt.textContent=`cmd ${s.cmd[i]?"OPEN":"CLOSE"} · true pos ${(s.pos[i]*100).toFixed(0)} % (truth)`;
+  R.tt100.textContent=fmt(s.tt100[i],1)+" °C"; R.tt101.textContent=s.tt101[i]<-100?"−127 (fault)":fmt(s.tt101[i],2)+" °C";
+  R.qtxt.textContent=fmt(s.q[i],2)+" L/min"; R.pk.textContent=fmt(s.p[i],2)+" kPa";
+  R.needle.setAttribute("transform",`rotate(${Math.max(-120,Math.min(120,(s.p[i]||0)/4*240-120))} 250 184)`);
+  R.coiltxt.textContent=`${sc_.length_m} m · true ${sc_.true_l.toFixed(3)} L · configured ${sc_.configured_l.toFixed(3)} L`;
+  const dv=s.qd[i]>0.005; R.dvflow.setAttribute("opacity",dv?.9:0); R.dvtxt.textContent=sc_.diversion_open>0?"OPEN (fault, truth)":"closed";
+  let vb=0,vo=0;for(let k=0;k<=i;k++){vb+=(s.qt[k]||0)/60;vo+=(s.qt[k]||0)*(s.fo[k]??1)/60} R.tank.setAttribute("fill",mix(vb>0?vo/vb:1)); R.tank.setAttribute("height",Math.min(48,vb*18)); R.tank.setAttribute("y",380-Math.min(48,vb*18));
+  // readouts
+  const nv=s.v[i]/sc_.configured_l;
+  $("reads").innerHTML=[
+    ["XV-101 command",s.cmd[i]?"OPEN":"CLOSED"],["LS-OPEN / LS-CLOSED",`<span class="led ${s.lso[i]?"on":""}"></span><span class="led ${s.lsc[i]?"on":""}"></span>`],
+    ["FT-101 flow",fmt(s.q[i],2)+" L/min"],["Cumulative volume",fmt(s.v[i],3)+" L"],["Volumes exchanged (metered)",fmt(nv,2)+" ×"],
+    ["TT-100 feed",fmt(s.tt100[i],2)+" °C"],["TT-101 endpoint",s.tt101[i]<-100?"−127 fault":fmt(s.tt101[i],2)+" °C"],["PI-101 (virtual)",fmt(s.p[i],2)+" kPa"],
+  ].map(([k,v])=>`<span>${k}</span><span>${v}</span>`).join("");
+  const done=t>=r.t_close;
+  $("truth").innerHTML=[["Old water left in branch",fmt(s.res[i]*100,1)+" %"],["Old water in outflow",fmt(s.fo[i]*100,1)+" %"],
+    ["Endpoint conductivity",fmt(s.cond[i],0)+" µS/cm"],["Valve true position",(s.pos[i]*100).toFixed(0)+" %"],["Diverted flow",fmt(s.qd[i],2)+" L/min"],
+    ["Outcome vs truth",done?`<span class="pill"><i style="background:${OSTYLE[r.outcome]}"></i>${r.outcome}</span>`:"—"]]
+    .map(([k,v])=>`<span>${k}</span><span>${v}</span>`).join("");
+  // verdict
+  $("vmethod").textContent=S.method;
+  if(done){const [c,ic]=VSTYLE[r.verdict];$("vbadge").innerHTML=`<span class="vicon" style="background:${c}">${ic}</span>${r.verdict}`;
+    $("vreason").textContent=r.reason;$("vwarn").innerHTML=r.warnings.map(w=>`<li>${w}</li>`).join("")}
+  else{$("vbadge").innerHTML=`<span class="vicon" style="background:var(--muted)">…</span><span style="color:var(--ink2)">${t<2?"Baseline":"Flushing"}</span>`;
+    $("vreason").textContent=t<2?"Reading pre-flush baseline (TT-100, TT-101, PI-101).":`Valve commanded open. ${fmt(s.v[i],3)} L metered so far.`;$("vwarn").innerHTML=""}
+  for(const id in CS){const c=CS[id];const x=c.X(t);c.ph.setAttribute("x1",x);c.ph.setAttribute("x2",x);
+    const v=c.ys[0][i];if(v!=null){c.dot.setAttribute("cx",x);c.dot.setAttribute("cy",c.Y(v));c.dot.setAttribute("opacity",1)}else c.dot.setAttribute("opacity",0)}
+}
+function particles(dt){
+  const s=run().series,i=Math.min(S.i,s.t.length-1),q=s.qt[i]||0;
+  R.phase=(R.phase+dt*q*90)%R.len;
+  R.parts.forEach((p,k)=>{const L=(R.phase+k*R.len/R.parts.length)%R.len;const pt=R.path.getPointAtLength(L);
+    p.setAttribute("cx",pt.x);p.setAttribute("cy",pt.y);p.setAttribute("opacity",q>0.02?.9:0)});
+  R.rotor.setAttribute("transform",`translate(413 290) rotate(${(R.phase*4)%360})`);
+}
+function table(){
+  const sc_=sc();
+  $("cmp").innerHTML=`<tr><th>Method</th><th>Verdict</th><th>Reason given</th><th style="text-align:right">Stops at</th><th style="text-align:right">Water used</th><th style="text-align:right">Residual · truth</th><th>Outcome vs truth</th></tr>`+
+  METHODS.map(m=>{const r=sc_.runs[m];const [c,ic]=VSTYLE[r.verdict];
+    return `<tr class="${m===S.method?"sel":""}"><td><span class="pill"><i style="background:${MCOL[m]};border-radius:2px"></i>${m}</span></td>
+    <td><span class="pill" style="color:var(--ink)"><span class="vicon" style="width:18px;height:18px;font-size:11px;background:${c}">${ic}</span>${r.verdict}</span></td>
+    <td style="max-width:440px">${r.reason}${r.warnings.length?`<div style="color:var(--ink2);font-size:12px;margin-top:4px">⚠ ${r.warnings.join("<br>⚠ ")}</div>`:""}</td>
+    <td class="num">${r.t_close.toFixed(0)} s</td><td class="num">${r.water_used.toFixed(3)} L</td><td class="num">${(r.residual*100).toFixed(1)} %</td>
+    <td><span class="pill"><i style="background:${OSTYLE[r.outcome]}"></i>${r.outcome}</span></td></tr>`}).join("");
+}
+function load(resetTime){
+  const sc_=sc();
+  $("desc").innerHTML=`<b>${sc_.code}${sc_.has_fault?" · fault injected":""}.</b> ${sc_.description}`;
+  $("geom").textContent=`· ${sc_.length_m} m × 8 mm`;
+  document.querySelectorAll("#methods button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===S.method));
+  const n=run().series.t.length; $("scrub").max=n-1; if(resetTime){S.i=0;S.playing=false;$("play").textContent="Start"} S.i=Math.min(S.i,n-1);
+  $("footnote").innerHTML=`Adequate exchange (truth) = residual old water ≤ ${(sc_.adequate*100).toFixed(0)} %. Policy target ${sc_.target_volumes} volumes. ${P.meta.backends[S.backend]}. All values SIMULATED.`;
+  drawCharts(); table(); draw();
+}
+let last=null;
+function loop(ts){const dt=last==null?0:(ts-last)/1000;last=ts;
+  if(S.playing){S.acc+=dt*S.speed;const T=run().series.t;while(S.acc>=1&&S.i<T.length-1){S.i++;S.acc-=1}
+    if(S.i>=T.length-1){S.playing=false;$("play").textContent="Replay"} draw()}
+  particles(S.playing?dt:0);requestAnimationFrame(loop)}
+$("csv").onclick=()=>{const r=run(),s=r.series;const keys=["t","cmd","lso","lsc","q","v","tt100","tt101","p","pos","qt","qd","fo","res","cond"];
+  const head="# SIMULATED DATA - VeriFlush virtual testbed; columns pos,qt,qd,fo,res,cond are TRUTH (not used by decisions)\n# scenario="+sc().key+", method="+S.method+", verdict="+r.verdict+"\n";
+  const rows=s.t.map((_,i)=>keys.map(k=>s[k][i]).join(","));
+  const blob=new Blob([head+keys.join(",")+"\n"+rows.join("\n")],{type:"text/csv"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`veriflush_${sc().key}_${S.method.split(" ")[0]}.csv`;a.click()};
+// deep link: #s=<index>&m=<method>&b=<backend>&t=<seconds|end>&play=1  (used for screenshots and video capture)
+const H=new URLSearchParams(location.hash.slice(1));
+if(H.has("b")&&P.data[H.get("b")]){S.backend=H.get("b");$("backend").value=S.backend;fillScen()}
+if(H.has("s")){S.scen=Math.min(+H.get("s"),P.data[S.backend].length-1);$("scen").value=S.scen}
+if(H.has("m")&&METHODS.includes(H.get("m")))S.method=H.get("m");
+if(H.has("speed")){S.speed=+H.get("speed")}
+buildRig(); buildCharts(); load(true);
+if(H.has("t")){const T=run().series.t;S.i=H.get("t")==="end"?T.length-1:Math.max(0,T.findIndex(x=>x>=+H.get("t")));draw()}
+if(H.get("play")==="1"){S.playing=true;$("play").textContent="Pause"}
+requestAnimationFrame(loop);
+window.VF={state:S,load,draw,setScenario:i=>{S.scen=i;$("scen").value=i;load(true)},play:()=>{S.playing=true;$("play").textContent="Pause"},seek:i=>{S.i=i;draw()}};
+</script>
+</body>
+</html>

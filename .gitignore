@@ -1,0 +1,10 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+*.blend1
+
+# local or private material
+3d/reference_photos/
+3d/renders/anim_log.txt
+report_assets/TEAM_TODO.md
+report_assets/_*.png

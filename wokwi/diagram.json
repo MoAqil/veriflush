@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "author": "Team Gurt - VeriFlush (SIMULATED)",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-ds18b20", "id": "tt100", "top": -150, "left": 120, "attrs": { "temperature": "13", "deviceID": "100100100100" } },
+    { "type": "wokwi-ds18b20", "id": "tt101", "top": -150, "left": 260, "attrs": { "temperature": "24", "deviceID": "101101101101" } },
+    { "type": "wokwi-resistor", "id": "rpu", "top": -40, "left": 360, "rotate": 90, "attrs": { "value": "4700" } },
+    { "type": "wokwi-slide-switch", "id": "tt101plug", "top": -160, "left": 360, "attrs": { "value": "1" } },
+    { "type": "chip-rig-emulator", "id": "rig", "top": 260, "left": 140, "attrs": {} },
+    { "type": "wokwi-servo", "id": "xv101", "top": 250, "left": 420, "attrs": {} },
+    { "type": "wokwi-pushbutton", "id": "start", "top": -120, "left": -110, "attrs": { "color": "green", "label": "START" } }
+  ],
+  "connections": [
+    [ "uno:5V", "tt100:VCC", "red", [] ],
+    [ "uno:GND.1", "tt100:GND", "black", [] ],
+    [ "uno:5V", "tt101:VCC", "red", [] ],
+    [ "uno:GND.1", "tt101:GND", "black", [] ],
+    [ "uno:4", "tt100:DQ", "blue", [] ],
+    [ "uno:4", "tt101plug:2", "blue", [] ],
+    [ "tt101plug:1", "tt101:DQ", "blue", [] ],
+    [ "uno:4", "rpu:2", "blue", [] ],
+    [ "rpu:1", "uno:5V", "red", [] ],
+    [ "uno:5V", "rig:VCC", "red", [] ],
+    [ "uno:GND.2", "rig:GND", "black", [] ],
+    [ "uno:9", "rig:SERVO", "orange", [] ],
+    [ "uno:2", "rig:FLOW", "green", [] ],
+    [ "uno:5", "rig:LS_OPEN", "purple", [] ],
+    [ "uno:6", "rig:LS_CLOSED", "gray", [] ],
+    [ "uno:9", "xv101:PWM", "orange", [] ],
+    [ "uno:5V", "xv101:V+", "red", [] ],
+    [ "uno:GND.3", "xv101:GND", "black", [] ],
+    [ "uno:7", "start:1.l", "green", [] ],
+    [ "uno:GND.1", "start:2.l", "black", [] ]
+  ],
+  "dependencies": {}
+}

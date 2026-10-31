@@ -1,0 +1,185 @@
+; Filename: VeriFlush Rev-B rig - S04_blockage - SIMULATED
+; WNTR: 1.5.0
+; Created: 2026-10-31 15:52:12
+[TITLE]
+VeriFlush Rev-B rig - S04_blockage - SIMULATED
+Quality: TRACE from FEED = % fresh water. XV-101 opens at t = 2 s.
+Sensors are labelled on the map; EPANET is plug flow (no laminar tail).
+
+[JUNCTIONS]
+;ID                      Elevation       Demand Pattern                 
+ MAN                                0               0                            ;
+ TEE                                0               0                            ;
+ C01                                0               0                            ;
+ C02                                0               0                            ;
+ C03                                0               0                            ;
+ C04                                0               0                            ;
+ C05                                0               0                            ;
+ C06                                0               0                            ;
+ C07                                0               0                            ;
+ C08                                0               0                            ;
+ C09                                0               0                            ;
+ C10                                0               0                            ;
+ C11                                0               0                            ;
+ C12                                0               0                            ;
+ TT101                              0               0                            ;
+
+[RESERVOIRS]
+;ID                                   Head                  Pattern
+ FEED                               0                            ;
+ TK102                           0.15                            ;
+ TK103                           0.15                            ;
+ TK102D                          0.15                            ;
+
+[TANKS]
+;ID                              Elevation           Init Level            Min Level            Max Level             Diameter           Min Volume Volume Curve         Overflow            
+
+[PIPES]
+;ID                   Node1                Node2                              Length             Diameter            Roughness           Minor Loss               Status
+ REF                  MAN                  TK102                              2               8             1.5             153                 Open   ;
+ FT101                MAN                  TEE                              0.5               8             1.5              42                 Open   ;
+ DV101                TEE                  TK102D                           0.8               8             1.5              60               Closed   ;
+ P01                  TEE                  C01                              0.5               8             1.5   0.58333333333                 Open   ;
+ P02                  C01                  C02                              0.5               8             1.5   0.58333333333                 Open   ;
+ P03                  C02                  C03                              0.5               8             1.5   0.58333333333                 Open   ;
+ P04                  C03                  C04                              0.5               8             1.5   0.58333333333                 Open   ;
+ P05                  C04                  C05                              0.5               8             1.5   0.58333333333                 Open   ;
+ P06                  C05                  C06                              0.5               8             1.5   0.58333333333               Closed   ;
+ P07                  C06                  C07                              0.5               8             1.5   0.58333333333                 Open   ;
+ P08                  C07                  C08                              0.5               8             1.5   0.58333333333                 Open   ;
+ P09                  C08                  C09                              0.5               8             1.5   0.58333333333                 Open   ;
+ P10                  C09                  C10                              0.5               8             1.5   0.58333333333                 Open   ;
+ P11                  C10                  C11                              0.5               8             1.5   0.58333333333                 Open   ;
+ P12                  C11                  C12                              0.5               8             1.5   0.58333333333                 Open   ;
+ R101                 C12                  TT101                           0.01               8             1.5               0                 Open   ;
+ XV101                TT101                TK103                           0.01               8             1.5               2               Closed   ;
+
+[PUMPS]
+;ID                   Node1                Node2                Properties          
+ P101                 FEED                 MAN                  HEAD     SRC                    ;
+
+[VALVES]
+;ID                   Node1                Node2                            Diameter Type              Setting           Minor Loss
+
+[TAGS]
+;type      name       tag       
+
+[DEMANDS]
+;ID        Demand     Pattern   
+
+[STATUS]
+;ID        Setting   
+
+[PATTERNS]
+;ID        Multipliers
+
+[CURVES]
+;ID         X-Value      Y-Value     
+;PUMP: SRC
+ SRC            0.000000     0.400000   ;
+ SRC            0.020000     0.320000   ;
+ SRC            0.040000     0.080000   ;
+
+
+[CONTROLS]
+Pipe XV101 Open AT TIME 0.000555556
+
+[RULES]
+
+[ENERGY]
+GLOBAL PRICE           0.0000
+
+[EMITTERS]
+;ID        Flow coefficient
+
+[QUALITY]
+
+[SOURCES]
+;Node      Type       Quality    Pattern   
+
+[REACTIONS]
+;Type           Pipe/Tank               Coefficient
+
+ ORDER BULK 1
+ ORDER TANK 1
+ ORDER WALL 1
+ GLOBAL BULK 0.0000    
+ GLOBAL WALL 0.0000    
+
+[MIXING]
+;Tank ID             Model Fraction
+
+[TIMES]
+DURATION             00:04:00
+HYDRAULIC TIMESTEP   00:00:01
+QUALITY TIMESTEP     00:00:01
+PATTERN TIMESTEP     00:00:01
+PATTERN START        00:00:00
+REPORT TIMESTEP      00:00:01
+REPORT START         00:00:00
+START CLOCKTIME      00:00:00 AM
+RULE TIMESTEP        00:06:00
+STATISTIC            NONE      
+
+[REPORT]
+
+[OPTIONS]
+UNITS                LPS                 
+HEADLOSS             D-W                 
+SPECIFIC GRAVITY     1
+VISCOSITY            0.99601593625
+TRIALS               200
+ACCURACY             0.001
+CHECKFREQ            2
+MAXCHECK             10
+UNBALANCED           STOP                
+PATTERN              1                   
+DEMAND MULTIPLIER    1
+EMITTER EXPONENT     0.5
+QUALITY              TRACE FEED
+DIFFUSIVITY          1
+TOLERANCE            0.01
+
+[COORDINATES]
+;Node      X-Coord    Y-Coord   
+FEED                0.000000000          0.000000000
+MAN                 2.000000000          0.000000000
+TK102               6.000000000          2.200000000
+TEE                 3.200000000          0.000000000
+C01                 3.600000000         -0.350000000
+C02                 4.036363636          0.350000000
+C03                 4.472727273         -0.350000000
+C04                 4.909090909          0.350000000
+C05                 5.345454545         -0.350000000
+C06                 5.781818182          0.350000000
+C07                 6.218181818         -0.350000000
+C08                 6.654545455          0.350000000
+C09                 7.090909091         -0.350000000
+C10                 7.527272727          0.350000000
+C11                 7.963636364         -0.350000000
+C12                 8.400000000          0.350000000
+TT101               9.000000000          0.000000000
+TK103               9.800000000         -1.200000000
+TK102D              3.200000000         -1.600000000
+
+[VERTICES]
+;Link      X-Coord    Y-Coord   
+
+[LABELS]
+;X-Coord  Y-Coord  Label
+ -0.40  0.55  "TK-101 feed + TT-100"
+ 1.00  -0.45  "P-101 pump+bypass"
+ 1.60  0.45  "MAN: PI-101 (virtual 0-10 kPa)"
+ 2.30  -0.45  "FT-101 flow sensor"
+ 3.05  -0.55  "DV-101 diversion"
+ 4.60  0.75  "6 m x 8 mm coil (C01-C12)"
+ 8.60  0.45  "TT-101 endpoint"
+ 9.00  -0.55  "XV-101 servo valve + LS-OPEN/CLOSED"
+ 9.70  -1.65  "TK-103 outlet"
+ 5.60  2.60  "TK-102 reference"
+ 2.60  -2.05  "TK-102 diversion"
+
+[BACKDROP]
+UNITS    NONE
+
+[END]

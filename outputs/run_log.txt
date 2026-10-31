@@ -1,0 +1,14 @@
+representative runs: 78  (4 s)
+monte carlo [two_region] done (51 s)
+                  method  True pass  False pass  True failure  False failure  Uncertain  fault_detection_rate  mean_water_l
+Flow + configured volume        247         160            40             73          0              0.256818      0.983577
+              Timer-only        326         194             0              0          0              0.000000      0.817842
+               VeriFlush        199           0            39              1        281              0.931818      0.943607
+monte carlo [radial] done (184 s)
+                  method  True pass  False pass  True failure  False failure  Uncertain  fault_detection_rate  mean_water_l
+Flow + configured volume         21         386            40             73          0              0.256818      0.983577
+              Timer-only         98         422             0              0          0              0.000000      0.817842
+               VeriFlush        195           0            39              5        281              0.920455      1.031637
+sensitivity done (341 s)
+done in 343.5 s
+    Maximum Trials .................... 200
