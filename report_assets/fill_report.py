@@ -142,10 +142,10 @@ fill_box(table_containing("FINAL HEADLINE EVIDENCE").rows[0].cells[0],
          ["False passes (Verified with more than 5 % old water left): fixed timer 37 %, flow + configured volume "
           "31 %, VeriFlush 0 %. Starkest case, S02 restriction: the timer leaves a median 11.5 % old water in "
           "40/40 runs.",
-          "Injected faults detected: 0 %, 26 % and 93 %.",
-          "No abstentions on healthy, restricted, diverted, wrong-volume or biased-meter branches; the 54 % "
-          "Uncertain rate comes from a deliberately fault-heavy test set (11 of 13 scenarios inject a fault) and "
-          "includes 240 successful flushes sent to a staff check."],
+          "Uncertain on healthy branches with usable temperature contrast: 0 %. The overall 54 % comes from the "
+          "fault and weak-contrast cases of a deliberately fault-heavy test set (11 of 13 scenarios), where 240 "
+          "flushes that had succeeded were sent to a staff check instead of being passed.",
+          "Injected faults detected: 0 %, 26 % and 93 %."],
          ["valid physical run count", "calibrated flow range", "measured wet volume", "measured litres per run",
           "final TRL"])
 

@@ -218,6 +218,33 @@ for r in t1.rows:
                 for run in cp.runs:
                     run.font.size = ref_size
 
+# ---------------- v13 panel fixes ----------------
+replace(para("Low-use and distal plumbing branches can retain aged water,"),
+        "nobody checks that the old water in the intended branch was actually displaced.",
+        "the record rarely shows whether the old water in the intended branch was actually displaced.")
+replace(para("Table 4. SIMULATED results"), "(S03, S08–S11), 40 runs each.",
+        "(S03, S08, S09a, S09b, S10, S11), 40 runs each.")
+replace(para("Electrical consumption is estimated similarly"),
+        "Electrical consumption is estimated similarly from measured current/time or rated power clearly labelled "
+        "as an upper-bound assumption.",
+        "Electrical use is small: at an ASSUMED 5–10 W pump rating (replaced by the label value once read) a 94 s "
+        "flush uses about 0.1–0.3 Wh, plus about 0.25 W for the controller.")
+p81 = para("VeriFlush aligns most directly with Theme 3")
+full = p81.text
+cut_a = full.index("Secondary links are")
+cut_b = full.index("Scaled linearly per room")
+cut_c = full.index("Among the 2026 UN Water Conference themes")
+scale = full[cut_b:cut_c].strip()
+set_text(p81, full[:cut_a].strip())
+second = d.add_paragraph((full[cut_a:cut_b] + full[cut_c:]).strip(), style=p81.style)
+p81._p.addnext(second._p)
+t8cap = para("Table 8. MODELLED 300-room hotel")
+t8 = t8cap._p.getnext()
+while t8.tag != qn("w:tbl"):
+    t8 = t8.getnext()
+moved_scale = d.add_paragraph(scale, style="Normal")
+t8.addnext(moved_scale._p)
+
 # forced page breaks before Sections 3 and 4
 for head in ("3. Problem Definition and Context", "4. State of the Art and Gap"):
     el = para(head)._p.getprevious()
