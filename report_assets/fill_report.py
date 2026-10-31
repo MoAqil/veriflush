@@ -312,7 +312,6 @@ todo = ["# Still required from the team before submission", "",
         "- **K-factor**: run the 500 mL jug test 3 times with the flow test sketch; send the pulse counts",
         "- **Rig build**: still to buy rigid PE stubs for the push-fit valves, small blade fuses (1/3/5 A) and tanks; fix the DS18B20 bench wiring",
         "- **Section 10 / AI disclosure**: confirm which other AI tool critiqued the parts list (named generically for now)",
-        "- **Valves**: the report calls them manual; if XV-101 ends up servo-driven, update Sections 5.1 and 5.2",
         "- **Table 3 / results**: replace PREDICTED values with any measured ones (wet volume, K-factor, runs)",
         ""]
 for title, items in TODO:
