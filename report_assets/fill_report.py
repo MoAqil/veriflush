@@ -140,11 +140,12 @@ for r in table_containing("VeriFlush (proposed)").rows:
 fill_box(table_containing("FINAL HEADLINE EVIDENCE").rows[0].cells[0],
          "AT A GLANCE (SIMULATED digital twin, 520 flushes per method; physical runs in progress)",
          ["False passes (Verified with more than 5 % old water left): fixed timer 37 %, flow + configured volume "
-          "31 %, VeriFlush 0 %.",
-          "Injected faults detected: 0 %, 26 % and 93 %. Mean water per flush: 0.82, 0.98 and 0.94 L.",
-          "VeriFlush abstains (Uncertain) in 54 % of runs, all in sensor-fault, valve-fault or weak-contrast "
-          "scenarios; 240 of these flushes had in fact succeeded and go to a staff check, not a pass. It abstains "
-          "in none of the healthy, restricted, diverted, wrong-volume or biased-meter runs."],
+          "31 %, VeriFlush 0 %. Starkest case, S02 restriction: the timer leaves a median 11.5 % old water in "
+          "40/40 runs.",
+          "Injected faults detected: 0 %, 26 % and 93 %.",
+          "No abstentions on healthy, restricted, diverted, wrong-volume or biased-meter branches; the 54 % "
+          "Uncertain rate comes from a deliberately fault-heavy test set (11 of 13 scenarios inject a fault) and "
+          "includes 240 successful flushes sent to a staff check."],
          ["valid physical run count", "calibrated flow range", "measured wet volume", "measured litres per run",
           "final TRL"])
 
@@ -304,6 +305,7 @@ todo = ["# Still required from the team before submission", "",
         "- **Section 10**: one line per member naming a concrete output; dated advisor and mentor input",
         "- **Section 14**: both signatures and dates",
         "- **References**: [17] Dubai Building Code is never cited; cite it where it applies or remove it",
+        "- **Section 5.1**: confirm whether the two DS18B20 probes (TT-100, TT-101) are fitted; if not, endpoint results stay SIMULATED",
         "- **Table 3 / results**: replace PREDICTED values with any measured ones (wet volume, K-factor, runs)",
         ""]
 for title, items in TODO:

@@ -238,7 +238,8 @@ replace(para("VeriFlush aligns most directly with Theme 3"),
 t9 = table_with("Share standard event schema")
 targets = {"Action": "Pilot target",
            "Verify selected branch flush": "≥ 95 % of events with a complete record",
-           "Return Uncertain": "≤ 20 % Uncertain on healthy branches; resolved < 24 h",
+           "Return Uncertain": "≤ 20 % Uncertain on healthy branches with ≥ 1.5 °C contrast (summer reported "
+                               "separately); resolved < 24 h",
            "Stop on evidence": "L per event ≤ the site's timer baseline",
            "Detect sensor/valve faults": "≥ 90 % of scripted faults (simulated: 93 %)",
            "Share standard event schema": "Mapped to ≥ 2 vendor systems"}
@@ -259,8 +260,8 @@ set_text(para("Digital integration and governance"), "9.1 Digital integration an
 set_text(para("Potential models—hardware plus commissioning"),
          "The first model to test is a verification service for hotels and schools that must flush under TG-44 "
          "[23], sold through facility-management contractors and priced per verified branch per year. "
-         "Hardware-plus-commissioning and licensing to valve or BMS vendors are the alternatives; pricing and "
-         "ownership of Uncertain events are set in the pilot.")
+         "It starts with the Tier 0 audit kit (Section 7.3) and adds fixed nodes only on Tier 2 branches; pricing "
+         "and ownership of Uncertain events are set in the pilot.")
 
 # ---------------- sections 10 and 11 ----------------
 replace(para("Confirmed team identity"),
@@ -311,9 +312,11 @@ replace(para("The team reports an Amazon order"), " The purchased BOM remains a 
         "report should add only a receipt-supported total, borrowed-item list and actual substitutions, without "
         "retrospectively rewriting what was purchased.", "")
 remove(para("The remaining critical path is"))
-replace(para("Indicative economics"), "not every outlet.", "not every outlet. As an illustration (ASSUMED), if "
-        "verification avoids one 10-minute repeat visit per 20 of the base case's 15,600 events a year, it saves "
-        "about 130 staff-hours per hotel annually.")
+replace(para("Indicative economics"), "not every outlet.", "not every outlet. Water alone never pays back: the "
+        "base case saves about 1.07 m³ (≈ AED 9) per outlet a year. Amortised over 5 years, a node costs AED "
+        "400–1,100 per branch a year, so at an ASSUMED AED 50 per staff-hour it must save 8–22 staff-hours per "
+        "branch a year (9–25 minutes per weekly flush), plausible only where it replaces attended flushing or "
+        "repeat visits; the pilot measures this.")
 set_text(para("Using the European Commission interpretation"),
          "Using the European Commission TRL scale [20], the decision logic is at TRL 3 (simulation plus compiled, "
          "replay-matched firmware) and the physical subsystem at TRL 2 while assembly is completed. A calibrated rig "
@@ -337,14 +340,81 @@ replace(para("Environmental benefit depends on avoiding"), "future public-health
 replace(para("Electrical consumption should similarly use"), "Electrical consumption should similarly use",
         "Electrical consumption is estimated similarly from")
 replace(para("A first field study should be"), "A first field study should be", "The first field study is")
-replace(para("Environmental benefit depends on avoiding"), "The project will therefore report",
-        "Hydraulic, operational and water-use indicators are therefore reported")
+replace(para("Environmental benefit depends on avoiding"), "The project will therefore report hydraulic, "
+        "operational and water-use indicators separately", "Hydraulic, operational and water-use indicators are "
+        "therefore reported separately")
 for r in t_cost.rows:
     if r.cells[0].text.strip() == "Prototype total":
         set_cell(r.cells[2], "Receipt-supported cash total")
 replace(para("VeriFlush aligns most directly with Theme 3"), "with no health claim.",
-        "with no health claim. These effects scale with the m³ avoided and are not quantified here pending sourced "
-        "conversion factors.")
+        "with no health claim. Scaled linearly per room to Dubai's 154,264 hotel rooms [27], the MODELLED saving is about 166,000 "
+        "m³ yr⁻¹ (range −3,000 to 614,000), roughly 0.02 % of DEWA's annual desalinated production [15]; the SDG 7, "
+        "13 and 14 effects scale with this small volume, so VeriFlush's main value is assurance evidence.")
+
+# ---------------- round 3 (fresh panel) ----------------
+replace(para("Key result (SIMULATED)."), "ran 13 normal and fault scenarios 40 times each",
+        "ran 2 fault-free and 11 fault scenarios 40 times each")
+replace(para("Key result (SIMULATED)."), "flagged 410 of 440 runs with injected faults (93 %)",
+        "flagged 410 of the 440 fault-injected runs (93 %)")
+replace(para("The physical prototype is a supervised"), "approved test procedure.",
+        "approved test procedure. Endpoint evidence needs two DS18B20 probes (TT-100 feed, TT-101 endpoint), which "
+        "the firmware supports; until they are fitted and checked on the rig, endpoint results remain SIMULATED.")
+replace(para("The current proof rig intentionally replaces"), "Any component not physically installed must be "
+        "described as proposed or digitally demonstrated, never as physically validated.",
+        "Components not physically installed are described as proposed or digitally demonstrated.")
+replace(para("The digital prototype is the decision and communication layer"), "Physical Arduino data should be "
+        "imported wherever available. Synthetic traces may demonstrate missing-sensor, wrong-volume and "
+        "communication-fault cases only when they are visibly labelled Simulated and kept separate from measured "
+        "performance results.", "Physical Arduino data are imported where available; synthetic traces are visibly "
+        "labelled Simulated and kept separate from measured results.")
+replace(para("The digital prototype's values were frozen"), " Development trials may tune these values.", "")
+for r in t3.rows:
+    if r.cells[0].text.strip() == "Temperature":
+        set_cell(r.cells[2], "Feed ≈ 13 °C (chilled feed tank) vs stagnant ≈ 24 °C: ≈ 11 °C contrast, above the "
+                             "1.5 °C rule (absolute difference, so a warmer feed also works)")
+replace(para("Table 6. SIMULATED results"), "Physical results are pending.",
+        "Verified coverage = Verified among truly successful flushes. Physical results are pending.")
+replace(para("Figure 4. SIMULATED counterexample"), "VeriFlush continues to 2.2 %.",
+        "VeriFlush continues to 2.2 %. Across all 40 S05 seeds the medians are 5.2 % (timer, 28 false passes), 7.2 % "
+        "(flow + volume, 40) and 2.2 % (VeriFlush, 0); the starkest case is S02 restriction, where the timer leaves "
+        "a median 11.5 % in all 40 runs.")
+set_text(para("• Permit Uncertain with an escalation path"),
+         "• Facility operators and water-safety teams: permit Uncertain with an escalation path, and publish "
+         "minimum event, calibration, sensor-health and configuration fields.")
+set_text(para("• Require manual override, audit trails"),
+         "• BMS and valve vendors: provide manual override, audit trails, device identity and data-retention rules "
+         "for connected nodes.")
+set_text(para("• Keep water, workflow and water-quality outcomes separate"),
+         "• Regulators and operators: keep water, workflow and water-quality outcomes separate, and report litres "
+         "per verified event against SDG indicator 6.4.1 (water-use efficiency).")
+replace(para("The UAE’s reliance on desalinated potable water"), "accredited microbiological testing.",
+        "accredited microbiological testing. The same audit need exists wherever water-management programmes are "
+        "expected [13], [24], [25]. The temperature rule uses the absolute feed-to-endpoint difference, but small "
+        "summer contrasts in the UAE would raise the Uncertain rate.")
+replace(para("Every digital screen") if any(p.text.startswith("Every digital screen") for p in d.paragraphs)
+        else para("The dashboard presents these indicators"),
+        "Digital screens used in the final report and video must identify whether",
+        "Every digital screen in this report and the video states whether")
+for r in t_cost.rows:
+    if r.cells[0].text.strip() == "Operating cost":
+        set_cell(r.cells[1], "≈ AED 100–300 per branch per year for recalibration and inspection (ASSUMED)")
+replace(para("The digital prototype exposes"), " Vendor neutrality remains a design objective until demonstrated "
+        "with real interfaces.", "")
+replace(para("A practical deployment need not instrument every outlet."), "Tier 1 uses existing usage/BMS data",
+        "Tier 0, the first product (PROPOSED), is a portable clamp-on flow and surface-temperature kit for "
+        "technician audits with no plumbing tie-in; clamp-on accuracy on small-bore, low-flow pipe is untested, so it is first checked against FT-101 on the rig. Tier 1 uses existing usage/BMS data")
+replace(para("Table A7. Minimum weekend demonstration matrix") if any(p.text.startswith("Table A7. Minimum")
+        for p in d.paragraphs) else para("Table 4. Minimum weekend"), "Minimum weekend demonstration",
+        "Minimum demonstration")
+t8 = table_with("Monitored outlets")
+for row in t8.rows:
+    trPr = row._tr.get_or_add_trPr()
+    if trPr.find(qn("w:cantSplit")) is None:
+        trPr.append(trPr.makeelement(qn("w:cantSplit"), {}))
+    for c in row.cells:
+        for cp in c.paragraphs:
+            cp.paragraph_format.keep_with_next = True
+para("Table 10. MODELLED").paragraph_format.keep_with_next = True
 replace(para("Table 9. UN/SDG contribution logic"), "Limits: hydraulic evidence only;",
         "Baselines come from site timer logs, BMS or maintenance-management records and operator timesheets. "
         "Limits: hydraulic evidence only;")
