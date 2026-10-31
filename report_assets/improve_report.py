@@ -125,8 +125,10 @@ remove(box)
 set_text(para("Figure 2. Final as-built physical proof rig"),
          "Figure 2. Design model of the proof rig (Blender, built from the team's purchased parts; coil colour "
          "from the simulation at t = 22 s): feed tank, pump, pressure gauge, splitters, manual valves, flow "
-         "sensor, coil branch, bypass and outlet tanks. DESIGN, not an as-built photograph.")
-replace(para("The physical prototype is a supervised"), "240 L h-1", "240 L·h⁻¹")
+         "sensor, coil branch, bypass and outlet tanks. DESIGN, not an as-built photograph; the built rig uses a "
+         "submersible pump inside the feed tank.")
+replace(para("The physical prototype is a supervised"), "by a nominal 12 V, 240 L h-1 brushless pump.",
+        "by a submersible nominal 12 V, 240 L·h⁻¹ brushless pump placed in the tank.")
 replace(para("Platform and architecture."), "cross-checked by a radial laminar model.",
         "cross-checked by a radial laminar model (dead-end transport remains an active research topic [19]).")
 
@@ -290,11 +292,13 @@ replace(para("Uncertainty sources include"), "The report will propagate or bound
         "into a single number.")
 t3 = table_with("Practical procedure")
 set_cell(t3.rows[0].cells[2], "PREDICTED pre-test value (replaced when measured)")
-pred = {"As-built geometry": "Design 6 m × 8 mm ID branch; Rev-B build may use 8 m (sensitivity case)",
-        "Wet volume": "0.30 L branch (0.40 L if 8 m) + 0.04 L upstream",
+pred = {"As-built geometry": "Planned 8 m of 8 mm ID silicone. Headline runs use 6 m; in the 8 m sensitivity case "
+                             "VeriFlush still gives 0 false passes (timer 40 %, flow + volume 45 %)",
+        "Wet volume": "≈ 0.40 L branch (8 m) + 0.04 L upstream",
         "Flow sensor": "≈ 5,900 pulses/L (nominal Hall sensor); healthy branch ≈ 0.63 L/min",
         "Temperature": "Feed ≈ 13 °C (ice packs) vs stagnant ≈ 24 °C: ≈ 11 °C contrast, above the 1.5 °C rule",
-        "Pressure and leakage": "Manifold ≈ 3.3 kPa healthy, ≈ 3.2 kPa with bypass open; no leaks expected",
+        "Pressure and leakage": "Manifold ≈ 3.3 kPa healthy, ≈ 3.2 kPa with bypass open: below the 0–3 bar gauge's "
+                                "resolution, so PG-101 is a safety indicator only; leak check before wet runs",
         "Digital system": "Complete: model v1.2.0; firmware replay 13/13 (Section 5.2)"}
 for r in t3.rows[1:]:
     k = r.cells[0].text.strip()
@@ -308,6 +312,8 @@ set_cell(t_cost.rows[0].cells[2], "Evidence basis")
 for r in t_cost.rows:
     if r.cells[0].text.strip() == "Prototype total":
         set_cell(r.cells[1], "≈ AED 837 order plus owned items; receipt reconciliation pending")
+    if r.cells[0].text.strip() == "Amazon order":
+        set_cell(r.cells[1], "≈ AED 837 cart total at ordering (incl. pump, AED 36.99); receipt pending")
 replace(para("The team reports an Amazon order"), " The purchased BOM remains a frozen procurement record; the final "
         "report should add only a receipt-supported total, borrowed-item list and actual substitutions, without "
         "retrospectively rewriting what was purchased.", "")
@@ -357,8 +363,9 @@ replace(para("Key result (SIMULATED)."), "ran 13 normal and fault scenarios 40 t
 replace(para("Key result (SIMULATED)."), "flagged 410 of 440 runs with injected faults (93 %)",
         "flagged 410 of the 440 fault-injected runs (93 %)")
 replace(para("The physical prototype is a supervised"), "approved test procedure.",
-        "approved test procedure. Endpoint evidence needs two DS18B20 probes (TT-100 feed, TT-101 endpoint), which "
-        "the firmware supports; until they are fitted and checked on the rig, endpoint results remain SIMULATED.")
+        "approved test procedure. The monitored branch is planned as 8 m of 8 mm ID silicone tubing (≈ 0.40 L). "
+        "The two DS18B20 endpoint probes (TT-100 feed, TT-101 endpoint) are not yet fitted; one is being bench-tested, "
+        "so endpoint results remain SIMULATED.")
 replace(para("The current proof rig intentionally replaces"), "Any component not physically installed must be "
         "described as proposed or digitally demonstrated, never as physically validated.",
         "Components not physically installed are described as proposed or digitally demonstrated.")
@@ -429,7 +436,7 @@ tags = [("TK-101 feed tank", (130, 560), (30, 330)),
         ("PG-101 gauge", (552, 545), (420, 420)),
         ("Manual valves", (712, 500), (640, 330)),
         ("FT-101 flow sensor", (858, 618), (800, 700)),
-        ("Branch coil (design 6 m × 8 mm ID, 0.302 L)", (1200, 520), (1000, 640)),
+        ("Branch coil (planned 8 m × 8 mm ID, ≈ 0.40 L)", (1200, 520), (1000, 640)),
         ("TK-102", (1290, 250), (1420, 120)),
         ("TK-103 outlet", (1720, 440), (1620, 600)),
         ("Arduino Uno R3", (700, 830), (840, 900))]
@@ -478,6 +485,13 @@ for p in order:
     old = re.match(r"Table (A\d+)\.", p.text.strip()).group(1)
     replace(p, f"Table {old}.", f"Table {amap[old]}.")
 replace(para("The minimum evidence set is three"), "(Tables A7–A8)", f"(Tables {amap['A7']}–{amap['A8']})")
+
+replace(para("Generative-AI disclosure:"), "AI tools supported literature discovery, document structuring, drafting, "
+        "editing, diagram generation and code/calculation planning.",
+        "Claude (Anthropic) was used through claude.ai for project explanation, the parts list and compatibility "
+        "checks, wiring diagrams, Arduino test sketches and a build manual, and through Claude Code for the "
+        "digital-prototype simulation, firmware, EPANET and 3D models, report drafting and editing, and rubric-based "
+        "review. Another AI tool was used once to critique the parts list.")
 
 # ---------------- renumber main-text tables (old 4, 5 moved to the appendix) ----------------
 remap = {6: 4, 7: 5, 8: 6, 9: 7, 10: 8, 11: 9}
