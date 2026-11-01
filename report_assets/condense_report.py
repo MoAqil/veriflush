@@ -463,6 +463,107 @@ for shd in cb._tc.iter(qn("w:shd")):
 for b in cb._tc.iter():
     if b.get(qn("w:color")) == "C9A227":
         b.set(qn("w:color"), "BFBFBF")
+# ---------------- Appendix F: data tables, read directly from the project's output files ----------------
+import csv
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def rows(path):
+    with open(ROOT / path, encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def nice(s):
+    return s.replace("_", " ", 1).replace("_", " ")
+
+
+def add_table(caption, header, body, widths_cm):
+    from docx.shared import Cm
+    cap = d.add_paragraph(caption, style="Figure Caption")
+    anchor.addprevious(cap._p)
+    t = d.add_table(rows=1 + len(body), cols=len(header))
+    t.style = d.styles["Table Grid"]
+    for r_i, vals in enumerate([header] + body):
+        for c_i, v in enumerate(vals):
+            cell = t.rows[r_i].cells[c_i]
+            cell.width = Cm(widths_cm[c_i])
+            cp = cell.paragraphs[0]
+            cp.paragraph_format.space_after = _Pt(0)
+            cp.paragraph_format.line_spacing = 1.0
+            run = cp.add_run(str(v))
+            run.font.size = _Pt(8.5)
+            run.bold = r_i == 0
+            cp.paragraph_format.keep_with_next = r_i < len(body)      # keep each table on one page
+    cap.paragraph_format.keep_with_next = True
+    if True:
+        for c in t.rows[0].cells:
+            tcPr = c._tc.get_or_add_tcPr()
+            shd = tcPr.makeelement(qn("w:shd"), {qn("w:val"): "clear", qn("w:color"): "auto", qn("w:fill"): "E7ECF2"})
+            tcPr.append(shd)
+    anchor.addprevious(t._tbl)
+    gap = d.add_paragraph("", style="Normal")
+    gap.paragraph_format.space_after = _Pt(2)
+    anchor.addprevious(gap._p)
+
+
+hF = d.add_paragraph("Appendix F — Data tables", style="Heading 2")
+anchor.addprevious(hF._p)
+intro = d.add_paragraph("All values below are taken directly from the project files in the public repository "
+                        "(github.com/MoAqil/veriflush): outputs/tables, epanet/ and data/physical. Digital results are "
+                        "simulated; Table A12 is the first physical shakedown log, before calibration.", style="Normal")
+anchor.addprevious(intro._p)
+
+by = {}
+for r in rows("outputs/tables/method_comparison_by_scenario.csv"):
+    by.setdefault(r["scenario"], {})[r["method"]] = r
+body = []
+for sc, m in by.items():
+    vf = m["VeriFlush"]
+    body.append([nice(sc), m["Timer-only"]["False pass"], m["Flow + configured volume"]["False pass"],
+                 int(vf["True pass"]) + int(vf["False pass"]), int(vf["True failure"]) + int(vf["False failure"]),
+                 vf["Uncertain"], vf["False pass"]])
+tot = [sum(int(r[k]) for r in body) for k in range(1, 7)]
+body.append(["All 13 scenarios"] + tot)
+add_table("Table A9. Simulated results by scenario (40 runs per scenario per method; two-region transport).",
+          ["Scenario", "Timer false passes", "Flow + volume false passes", "VeriFlush Verified", "VeriFlush Failed",
+           "VeriFlush Uncertain", "VeriFlush false passes"], body, [4.2, 2.0, 2.4, 2.0, 2.0, 2.2, 2.2])
+
+body = [[nice(r["scenario"]), f"{float(r['epanet_branch_flow_lpm']):.3f} / {float(r['python_branch_flow_lpm']):.3f}",
+         f"{float(r['epanet_manifold_kpa']):.2f} / {float(r['python_manifold_kpa']):.2f}",
+         (f"{float(r['epanet_t50_endpoint_s']):.0f} / {float(r['plug_flow_t50_s']):.0f}"
+          if r["epanet_t50_endpoint_s"] else "no flow")]
+        for r in rows("epanet/epanet_vs_python.csv")]
+add_table("Table A10. EPANET 2.2 rig models against the Python model (simulated).",
+          ["Scenario", "Branch flow, L/min (EPANET / Python)", "Manifold pressure, kPa (EPANET / Python)",
+           "Endpoint 50 % arrival, s (EPANET / plug flow)"], body, [4.0, 4.0, 4.0, 4.0])
+
+body = [[nice(r["scenario"]), f"{r['python_verdict']} / {r['fw_verdict']}",
+         f"{float(r['python_t_close_s']):.0f} / {float(r['fw_t_close_s']):.0f}",
+         f"{float(r['python_v_l']):.3f} / {float(r['fw_v_l']):.3f}",
+         "yes" if r["verdict_match"] == "True" and r["t_close_match"] == "True" else "no"]
+        for r in rows("outputs/tables/firmware_vs_python.csv")]
+add_table("Table A11. Arduino firmware replay against the Python engine (same simulated sensor traces).",
+          ["Scenario", "Verdict (Python / firmware)", "Stop time, s", "Litres", "Match"], body,
+          [4.2, 4.6, 2.6, 3.0, 1.6])
+
+log = []
+with open(ROOT / "data/physical/shakedown_run1.csv", encoding="utf-8") as f:
+    log = [r for r in csv.DictReader(l for l in f if not l.startswith("#"))]
+flowing = [r for r in log if int(r["pulses_per_s"]) > 0]
+pulses = sum(int(r["pulses_per_s"]) for r in flowing)
+rate = [int(r["pulses_per_s"]) for r in flowing if int(r["pulses_per_s"]) >= 10]
+body = [["Date and run", "1 November 2026, shakedown run 1 (Serial Monitor log)"],
+        ["Flow logged", f"{flowing[0]['time_s']}–{flowing[-1]['time_s']} s ({len(flowing)} s with pulses)"],
+        ["Total pulses", f"{pulses}"],
+        ["Steady pulse rate", f"{min(rate)}–{max(rate)} pulses/s"],
+        ["Volume and flow at the uncalibrated K = 5,880 /L",
+         f"{pulses / 5880:.3f} L; {min(rate) / 5880 * 60:.2f}–{max(rate) / 5880 * 60:.2f} L/min"],
+        ["Probe readings (T1 / T2)", f"{log[0]['T1_C']} °C / {log[0]['T2_C']} °C (offset not yet calibrated)"],
+        ["Status", "Hardware and logging check only; K-factor, wet volume and probe offsets still to be calibrated"]]
+add_table("Table A12. Physical shakedown run 1 on the as-built rig (measured, uncalibrated).",
+          ["Item", "Value"], body, [5.5, 11.0])
+
 for p in d.paragraphs:                    # moved and new paragraphs follow the 11 pt / 1.15 body format
     if p.style.name in ("Normal", "List Paragraph"):
         p.paragraph_format.line_spacing = 1.15
