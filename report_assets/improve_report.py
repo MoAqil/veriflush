@@ -291,7 +291,7 @@ replace(para("Uncertainty sources include"), "The report will propagate or bound
         "These are propagated or bounded where they affect classification; unlike uncertainties are not combined "
         "into a single number.")
 t3 = table_with("Practical procedure")
-set_cell(t3.rows[0].cells[2], "PREDICTED pre-test value (replaced when measured)")
+set_cell(t3.rows[0].cells[2], "Design / datasheet value")
 pred = {"As-built geometry": "Planned 8 m of 8 mm ID silicone. Headline runs use 6 m; in the 8 m sensitivity case "
                              "VeriFlush still gives 0 false passes (timer 40 %, flow + volume 45 %)",
         "Wet volume": "≈ 0.40 L branch (8 m) + 0.04 L upstream",
@@ -305,8 +305,8 @@ for r in t3.rows[1:]:
     if k in pred:
         set_cell(r.cells[2], pred[k])
 replace(para("Table 3. Calibration, integration"), "Table 3. Calibration, integration and evidence-release plan.",
-        "Table 3. Calibration plan with PREDICTED pre-test values from the digital twin; each is replaced by the "
-        "measured value when the rig run is complete.")
+        "Table 3. Calibration plan with design and datasheet values; measured values replace them as rig runs "
+        "are completed.")
 t_cost = table_with("Cost layer")
 set_cell(t_cost.rows[0].cells[2], "Evidence basis")
 for r in t_cost.rows:
