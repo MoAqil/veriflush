@@ -249,6 +249,71 @@ while t8.tag != qn("w:tbl"):
 moved_scale = d.add_paragraph(scale, style="Normal")
 t8.addnext(moved_scale._p)
 
+# ---------------- authoritative rig brief (1 Nov 2026): assembled, 4.8 W pump, YF-S401, probes on D4 ----------------
+def rep_all(old, new):
+    hits = 0
+    paras = list(d.paragraphs) + [cp for t in d.tables for r in t.rows for c in r.cells for cp in c.paragraphs]
+    for p in paras:
+        if old in p.text:
+            replace(p, old, new)
+            hits += 1
+    assert hits, old
+
+
+rep_all("mechanical assembly of the non-potable proof rig is in progress using",
+        "the non-potable proof rig is fully assembled, with calibration and validation runs in progress, using")
+rep_all("The physical rig (Uno R3, manual valves, flow sensor, bypass) is being assembled to repeat the key cases "
+        "with measured data.", "The physical rig (Uno R3, manual valves, YF-S401 flow sensor, bypass) is now "
+        "assembled; calibration and validation runs will repeat the key cases with measured data.")
+rep_all("Physical assembly in progress; digital prototype complete (simulated)",
+        "Physical rig assembled, calibration pending; digital prototype complete (simulated)")
+rep_all("by a submersible nominal 12 V, 240 L·h⁻¹ brushless pump placed in the tank.",
+        "by a submersible 12 V, 4.8 W brushless pump (nominal maximum 240 L·h⁻¹) placed in the tank.")
+rep_all("which contains flow sensor FT-101,", "which contains YF-S401 flow sensor FT-101 (nominal 0.5–5 L/min),")
+rep_all("The monitored branch is planned as 8 m of 8 mm ID silicone tubing (≈ 0.40 L);",
+        "The monitored branch is a coil of 8 mm ID silicone tubing, about 6–8 m long (0.30–0.40 L; centreline "
+        "length to be measured);")
+rep_all("The two DS18B20 endpoint probes (TT-100 feed, TT-101 endpoint) are not yet fitted; one is being "
+        "bench-tested, so endpoint results remain SIMULATED.",
+        "Two waterproof DS18B20 probes (TT-100 feed tank, TT-101 endpoint) share pin D4 with one 4.7 kΩ pull-up "
+        "and already log on the rig; until their offsets are calibrated, endpoint results remain SIMULATED.")
+rep_all("Mechanical assembly is in progress, so no calibrated physical result is reported yet;",
+        "The rig is assembled but not yet calibrated, so no calibrated physical result is reported yet;")
+rep_all("TRL 2 for the physical subsystem, which is being assembled.",
+        "TRL 2 for the physical subsystem, which is assembled and awaiting calibration.")
+rep_all("Electrical use is small: at an ASSUMED 5–10 W pump rating (replaced by the label value once read) a 94 s "
+        "flush uses about 0.1–0.3 Wh, plus about 0.25 W for the controller.",
+        "Electrical use is small: the pump is rated 4.8 W, so a 94 s flush uses at most about 0.13 Wh, plus about "
+        "0.25 W (ASSUMED) for the USB-powered controller.")
+for p in [cp for t in d.tables for r in t.rows for c in r.cells for cp in c.paragraphs]:
+    if p.text.startswith("Planned 8 m of 8 mm ID silicone."):
+        set_text(p, "Coil of 8 mm ID silicone, about 6–8 m (to be measured). Headline runs use 6 m; in the 8 m "
+                    "sensitivity case VeriFlush still gives 0 false passes (timer 40 %, flow + volume 45 %)")
+    elif p.text.startswith("≈ 0.40 L branch (8 m) + 0.04 L upstream"):
+        set_text(p, "0.30–0.40 L branch (6–8 m) + 0.04 L upstream")
+    elif p.text.startswith("≈ 5,900 pulses/L (nominal Hall sensor)"):
+        set_text(p, "≈ 5,900 pulses/L (YF-S401 nominal); healthy branch ≈ 0.63 L/min; valid range 0.5–5 L/min")
+
+# ---------------- Figure 2: as-built photograph replaces the design render ----------------
+photo = Path(__file__).resolve().parent / "_rig_asbuilt_labelled.png"
+if photo.exists():
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.shared import Cm, Pt
+    cap2 = para("Figure 2. Design model of the proof rig")
+    old_img = cap2._p.getprevious()
+    pic = d.add_paragraph()
+    pic.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    pic.paragraph_format.keep_with_next = True
+    pic.paragraph_format.space_after = Pt(2)
+    pic.add_run().add_picture(str(photo), width=Cm(14.0))
+    old_img.addprevious(pic._p)
+    drop(old_img)
+    set_text(cap2, "Figure 2. As-built physical proof rig, photographed 1 November 2026 (non-potable, tabletop). "
+                   "Water flows from the feed tank through the Y splitter and FT-101 into the monitored coil, past "
+                   "endpoint probe TT-101 and the manual outlet valve; side branches feed the diversion and "
+                   "reference boxes. The dead-end gauge leg PG-101 is just outside the frame, and tubing lengths "
+                   "are still to be measured.")
+
 # forced page breaks before Sections 3 and 4
 for head in ("3. Problem Definition and Context", "4. State of the Art and Gap"):
     el = para(head)._p.getprevious()
