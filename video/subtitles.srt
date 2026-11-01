@@ -1,65 +1,72 @@
 1
 00:00:00,300 --> 00:00:02,600
-Hotel rooms and school wings sit unused for days.
+Hotel rooms and school wings sit empty for days.
 
 2
 00:00:02,600 --> 00:00:05,000
-Before they're used again, their pipes get flushed.
+Before they're reused, their pipes get flushed.
 
 3
-00:00:05,000 --> 00:00:08,800
-But the record only says a timer ran out.
+00:00:05,200 --> 00:00:08,200
+But a flush log only says a timer ran out.
 
 4
-00:00:08,800 --> 00:00:14,800
-It never shows whether the stagnant water
-in that branch was actually replaced.
+00:00:08,200 --> 00:00:12,200
+It never proves the stagnant water was actually replaced.
 
 5
-00:00:15,000 --> 00:00:18,000
-This is our physical prototype.
+00:00:12,200 --> 00:00:14,900
+That's the gap VeriFlush closes.
 
 6
-00:00:18,000 --> 00:00:21,500
-A flow sensor counts every litre into the branch.
+00:00:15,100 --> 00:00:18,000
+VeriFlush is a digital twin and controller.
 
 7
-00:00:21,500 --> 00:00:26,500
-In our digital twin, a probe at the end of the pipe
-shows when fresh water arrives,
+00:00:18,000 --> 00:00:22,500
+It tracks flow, volume and the temperature
+at the end of the pipe,
 
 8
-00:00:26,500 --> 00:00:31,000
-and the controller decides:
-Verified, Failed, or Uncertain.
+00:00:22,500 --> 00:00:25,800
+then decides: Verified, Failed, or Uncertain.
 
 9
-00:00:31,000 --> 00:00:34,800
-It never passes a flush it can't prove.
+00:00:25,800 --> 00:00:29,000
+Here, half the water escapes through a side branch.
 
 10
+00:00:29,000 --> 00:00:30,800
+The timer says done.
+
+11
+00:00:30,800 --> 00:00:34,800
+VeriFlush keeps going until the branch
+is really exchanged.
+
+12
 00:00:35,000 --> 00:00:38,500
 Across 520 simulated flushes,
 
-11
-00:00:38,500 --> 00:00:43,000
-a fixed timer passed stale water 37% of the time,
-a flow meter 31%. VeriFlush: zero.
-
-12
-00:00:43,000 --> 00:00:47,800
-When a sensor failed, it said Uncertain
-instead of guessing.
-
 13
-00:00:48,000 --> 00:00:51,500
-Dubai already requires weekly flushing of empty hotel rooms.
+00:00:38,500 --> 00:00:42,200
+timers passed stale water 37% of the time,
+flow meters 31%.
 
 14
-00:00:51,500 --> 00:00:55,800
-VeriFlush turns that log into evidence, supporting SDG 6.4.
-Next: a pilot with a facility-management partner.
+00:00:42,200 --> 00:00:45,800
+VeriFlush: zero.
 
 15
+00:00:46,000 --> 00:00:50,000
+And this is our physical prototype:
+the same sensors, logging live.
+
+16
+00:00:50,000 --> 00:00:55,800
+Dubai already requires weekly flushing.
+VeriFlush turns that log into evidence.
+
+17
 00:00:56,000 --> 00:00:59,500
 Team Gurt. Making every flush count.
