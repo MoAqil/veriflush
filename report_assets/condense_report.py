@@ -426,6 +426,26 @@ replace(para("The first field study is a supervised"),
         "(AED 100–300 per branch a year, assumed; Table 5).",
         "Each node needs periodic flow checks, valve tests, probe recalibration and firmware updates (AED 100–300 per "
         "branch a year, assumed; Table 5).")
+cb = table_with("TEAM INPUT REQUIRED - CONTRIBUTIONS").rows[0].cells[0]   # blank lines for the team to fill
+for extra in cb.paragraphs[1:]:
+    extra._p.getparent().remove(extra._p)
+first = cb.paragraphs[0]
+for r in list(first.runs):
+    r._r.getparent().remove(r._r)
+first.add_run("Mohamad Zaheen (team leader): ")
+drop(para("Confirmed team identity:")._p)       # the box below lists everyone
+for who in ("Mohammed Aqil Mohideen: ", "Fawaz Ahmed: ", "Alvin Titus Alex: ",
+            "Advisor Prof. Manzar Abbas / mentor Nishant Keloth (Borouge), input and dates: "):
+    np_ = cb.add_paragraph(who)
+for cp in cb.paragraphs:
+    cp.paragraph_format.space_after = _Pt(1)
+    for r in cp.runs:
+        r.bold, r.font.color.rgb = False, None
+for shd in cb._tc.iter(qn("w:shd")):
+    shd.set(qn("w:fill"), "FFFFFF")
+for b in cb._tc.iter():
+    if b.get(qn("w:color")) == "C9A227":
+        b.set(qn("w:color"), "BFBFBF")
 for p in d.paragraphs:                    # moved and new paragraphs follow the 11 pt / 1.15 body format
     if p.style.name in ("Normal", "List Paragraph"):
         p.paragraph_format.line_spacing = 1.15
