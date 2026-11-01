@@ -294,8 +294,8 @@ de = ImageDraw.Draw(end)
 de.rectangle((W // 2 - 70, 250, W // 2 + 70, 258), fill=AMBER)
 de.text((W // 2, 360), "Team Gurt", font=font("bahnschrift.ttf", 130), fill=WHITE, anchor="mm")
 de.text((W // 2, 470), "Khalifa University", font=font("seguisb.ttf", 50), fill=(210, 222, 234), anchor="mm")
-de.text((W // 2, 590), "Mohammed Aqil Mohideen   ·   Fawaz Ahmed   ·   Mohamad Zaheen (team leader)   ·   "
-        "Alvin Titus Alex", font=font("segoeui.ttf", 36), fill=WHITE, anchor="mm")
+de.text((W // 2, 590), "Mohammed Aqil Mohideen   ·   Fawaz Ahmad   ·   Mohamad Zaheen (team leader)   ·   "
+        "Alvin Alex", font=font("segoeui.ttf", 36), fill=WHITE, anchor="mm")
 de.text((W // 2, 690), "VeriFlush   ·   CMAT-00196   ·   Theme 3", font=font("segoeui.ttf", 34),
         fill=(185, 200, 216), anchor="mm")
 de.text((W // 2, 900), "Digital results SIMULATED (VeriFlush v1.2.0)  ·  physical prototype under calibration  ·  "
