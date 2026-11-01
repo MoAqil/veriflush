@@ -104,11 +104,13 @@ def zoom_clip(img, dur, out, z1=1.07, cx=0.5, cy=0.5):
     run(["-loop", "1", "-i", png, "-vf", vf, "-frames:v", str(n)] + ENC + ["-an", out])
 
 
-def video_clip(src, start, length, dur, out, extra="", overlay=None, stab=False):
-    """take [start, start+length] of src, retime to dur, upscale, clean, optional overlay"""
+def video_clip(src, start, length, dur, out, extra="", overlay=None, stab=False, crop=""):
+    """take [start, start+length] of src, retime to dur, upscale, clean, optional crop and overlay"""
     speed = length / dur
     vf = "vidstabtransform=input=t.trf:smoothing=25:zoom=4," if stab else ""
     vf += f"trim={start:.3f}:{start + length:.3f},setpts=(PTS-STARTPTS)/{speed:.5f}"
+    if crop:
+        vf += f",{crop}"
     vf += (f",scale={W}:{H}:flags=lanczos,hqdn3d=1.5:1.5:0:0,eq=contrast=1.06:saturation=1.12:brightness=0.015,"
            f"unsharp=5:5:0.45,fps={FPS}{extra}")
     args = ["-i", str(src)]
@@ -183,8 +185,14 @@ segments.append("seg1.mp4")
 
 # ================= segment 2: presenter (live audio) =================
 a, b = w("vidB.wav", 0)[1] - 0.30, w("vidB.wav", 28)[2] + 0.35
-d2, m2 = make_audio(RAW / "vidB.mp4", [(a, b)], "a2.wav", denoise="afftdn=nf=-20,afftdn=nf=-20")
-video_clip(RAW / "vidB.mp4", a, b - a, d2, "v2.mp4")
+# phone was ~2 m away: speech ~20 dB above room noise. Gentle adaptive denoise, de-boom, presence lift,
+# light compression; loudnorm (in make_audio) then brings it to the voice-over level.
+VOICE_FAR = ("pan=mono|c0=0.5*c0+0.5*c1,lowpass=f=7500,afftdn=nr=10:nf=-45:tn=1,"
+             "equalizer=f=220:t=q:w=1:g=-3,equalizer=f=3200:t=q:w=1.2:g=3,"
+             "acompressor=threshold=-26dB:ratio=3:attack=5:release=150:makeup=2,"
+             "agate=threshold=0.015:ratio=3:attack=8:release=250:range=0.3")
+d2, m2 = make_audio(RAW / "vidB.mp4", [(a, b)], "a2.wav", denoise=VOICE_FAR)
+video_clip(RAW / "vidB.mp4", a, b - a, d2, "v2.mp4", crop="crop=iw*0.84:ih*0.84:iw*0.08:ih*0.02")
 mux("v2.mp4", "a2.wav", d2, "seg2.mp4")
 off2 = duration(B / "seg1.mp4")
 add_subs("vidB.wav", [(0, 10, "But a flush log only says a timer ran out."),
