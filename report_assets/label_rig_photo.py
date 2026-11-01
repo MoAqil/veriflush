@@ -13,7 +13,8 @@ font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 30)
 NAVY = (31, 58, 95)
 
 # (text, point on the component, top-left of the label)
-tags = [("TK-101 feed tank + P-101 pump", (230, 440), (15, 600)),
+tags = [("TK-101 feed tank + P-101 pump", (200, 470), (15, 600)),
+        ("TT-100 feed probe", (285, 400), (15, 180)),
         ("Y splitter", (520, 468), (430, 655)),
         ("Manual valves", (565, 345), (300, 250)),
         ("FT-101 YF-S401", (760, 470), (700, 385)),
