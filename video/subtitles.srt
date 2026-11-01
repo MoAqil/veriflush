@@ -1,0 +1,65 @@
+1
+00:00:00,300 --> 00:00:02,600
+Hotel rooms and school wings sit unused for days.
+
+2
+00:00:02,600 --> 00:00:05,000
+Before they're used again, their pipes get flushed.
+
+3
+00:00:05,000 --> 00:00:08,800
+But the record only says a timer ran out.
+
+4
+00:00:08,800 --> 00:00:14,800
+It never shows whether the stagnant water
+in that branch was actually replaced.
+
+5
+00:00:15,000 --> 00:00:18,000
+This is our physical prototype.
+
+6
+00:00:18,000 --> 00:00:21,500
+A flow sensor counts every litre into the branch.
+
+7
+00:00:21,500 --> 00:00:26,500
+In our digital twin, a probe at the end of the pipe
+shows when fresh water arrives,
+
+8
+00:00:26,500 --> 00:00:31,000
+and the controller decides:
+Verified, Failed, or Uncertain.
+
+9
+00:00:31,000 --> 00:00:34,800
+It never passes a flush it can't prove.
+
+10
+00:00:35,000 --> 00:00:38,500
+Across 520 simulated flushes,
+
+11
+00:00:38,500 --> 00:00:43,000
+a fixed timer passed stale water 37% of the time,
+a flow meter 31%. VeriFlush: zero.
+
+12
+00:00:43,000 --> 00:00:47,800
+When a sensor failed, it said Uncertain
+instead of guessing.
+
+13
+00:00:48,000 --> 00:00:51,500
+Dubai already requires weekly flushing of empty hotel rooms.
+
+14
+00:00:51,500 --> 00:00:55,800
+VeriFlush turns that log into evidence, supporting SDG 6.4.
+Next: a pilot with a facility-management partner.
+
+15
+00:00:56,000 --> 00:00:59,500
+Team Gurt. Making every flush count.
