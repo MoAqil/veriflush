@@ -218,6 +218,10 @@ for r in t1.rows:
                 for run in cp.runs:
                     run.font.size = ref_size
 
+replace(para("Platform and architecture."), "live or offline dashboard (Figure 3).",
+        "live or offline dashboard (Figure 3). Code, data and the dashboard are public at "
+        "https://github.com/MoAqil/veriflush.")
+
 # ---------------- v13 panel fixes ----------------
 replace(para("Low-use and distal plumbing branches can retain aged water,"),
         "nobody checks that the old water in the intended branch was actually displaced.",
