@@ -426,6 +426,23 @@ replace(para("The first field study is a supervised"),
         "(AED 100–300 per branch a year, assumed; Table 5).",
         "Each node needs periodic flow checks, valve tests, probe recalibration and firmware updates (AED 100–300 per "
         "branch a year, assumed; Table 5).")
+# ---------------- summary boxes become ordinary paragraphs with a bold lead-in ----------------
+LEADS = {"AT A GLANCE": "In short (simulated digital twin, 520 flushes per method). ",
+         "TECHNOLOGY READINESS": "Technology readiness (European Commission scale [20]). ",
+         "DIGITAL INTEGRATION RECORD": "Digital integration record (31 Oct 2026). "}
+for t in list(d.tables):
+    cell = t.rows[0].cells[0]
+    if len(t.rows) != 1 or not any(s.get(qn("w:fill"), "").upper() == "EEF3F8" for s in cell._tc.iter(qn("w:shd"))):
+        continue
+    lines = [cp.text.strip() for cp in cell.paragraphs if cp.text.strip()]
+    lead = next((v for k, v in LEADS.items() if lines[0].upper().startswith(k)), lines[0].capitalize() + ". ")
+    body = " ".join(l.lstrip("• ").strip() for l in lines[1:])
+    np_ = d.add_paragraph(style="Normal")
+    np_.add_run(lead).bold = True
+    np_.add_run(body)
+    t._tbl.addprevious(np_._p)
+    t._tbl.getparent().remove(t._tbl)
+
 cb = table_with("TEAM INPUT REQUIRED - CONTRIBUTIONS").rows[0].cells[0]   # blank lines for the team to fill
 for extra in cb.paragraphs[1:]:
     extra._p.getparent().remove(extra._p)
